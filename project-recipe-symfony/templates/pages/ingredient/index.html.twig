@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SymRecipe - Mes ingrédients
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Mes ingredients</h1>
+    <div class="count mt-4">
+        <h4>il y a {{ingredients.getTotalItemCount}} ingrédients au total</h4>
+    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Numéro</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Prix</th>
+                <th scope="col">Date de création</th>
+                <th scope="col">Edition</th>
+                <th scope="col">Suppresion</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ingredient in ingredients %}
+            <tr class="table-primary">
+                <th scope="row">{{ ingredient.id }}</th>
+                <td>{{ ingredient.name }}</td>
+                <td>{{ ingredient.price|number_format(2, '.', ',') }}
+                    €</td>
+                <td>{{ ingredient.createdAt|date('d/m/Y') }}</td>
+                <td>
+                    <a href="#" class="btn btn-info">Modifier</a>
+                </td>
+                <td>
+                    <a href="#" class="btn btn-warning">Supprimer</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="navigation d-flex justify-content-center mt-4">
+        {{ knp_pagination_render(ingredients) }}
+    </div>
+
+    {% endblock %}
