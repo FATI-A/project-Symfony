@@ -7,6 +7,16 @@
 <div class="container mt-4">
 	{% if not recipes.items is same as ([])%}
 		<h1>Mes recettes</h1>
+		<a href="{{path('recipe.new')}}" class="btn btn-primary mt-4">
+			créer une recette
+		</a>
+		{# read and display just one flash message type #}
+		{% for message in app.flashes('success') %}
+			<div class="alert-success mt-4">
+				{{ message }}
+			</div>
+		{% endfor %}
+
 		<div class="count mt-4">
 			<h4>il y a
 				{{recipes.getTotalItemCount}}
@@ -48,11 +58,10 @@
 						<td>{{  recipe.description }}</td>
 						<td>{{  recipe.createdAt|date('d/m/Y') }}</td>
 						<td>
-							<a href="" class="btn btn-info">Modifier</a>
-
+							<a href="{{path('recipe.edit',{id:recipe.id})}}" class="btn btn-info">Modifier</a>
 						</td>
 						<td>
-							<a href="#" class="btn btn-warning">Supprimer</a</td>
+							<a href="{{path('recipe.delete',{id:recipe.id})}}" class="btn btn-warning">Supprimer</a></td>
 						</td>
 					</tr>
 				</tbody>
