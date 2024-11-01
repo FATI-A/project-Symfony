@@ -73,6 +73,15 @@ class RecipeController extends AbstractController
 
 
 
+
+    /**
+     * this controller allow us to update recipe
+     *
+     * @param Recipe $recipe
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('/recette/edition/{id}', 'recipe.edit', methods: ["GET", "POST"])]
     public function edit(
         Recipe $recipe,
@@ -103,6 +112,13 @@ class RecipeController extends AbstractController
         );;
     }
 
+ 
+    /**
+     * this controller allow us to delete recipe
+     * @param Recipe $recipe
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('/recette/suppression/{id}', 'recipe.delete', methods: ["GET"])]
     public function delete(
         Recipe $recipe,
