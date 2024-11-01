@@ -14,15 +14,15 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RecipeController extends AbstractController
 {
-    
+
     /**
- * this controller display all recipes
- *
- * @param RecipeRepository $repository
- * @param PaginatorInterface $paginator
- * @param Request $request
- * @return Response
- */
+     * this controller display all recipes
+     *
+     * @param RecipeRepository $repository
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
+     */
     #[Route('/recette', name: 'recipe.index', methods: ["GET"])]
     public function index(
         RecipeRepository $repository,
@@ -47,9 +47,12 @@ class RecipeController extends AbstractController
      * @return Response
      */
     #[Route('/recette/creation', name: 'recipe.new', methods: ["GET", "POST"])]
-    public function new(Request $request, EntityManagerInterface $manager): Response{
-         $recipe = new Recipe();
-         $form= $this->createForm(RecipeType :: class, $recipe);
+    public function new(Request $request, EntityManagerInterface $manager): Response
+    {
+        $recipe = new Recipe();
+        $form = $this->createForm(RecipeType::class, $recipe, [
+            'submit_label' => $recipe->getId() ? 'Mettre à jour ma recette' : 'Créer ma recette'
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $recipe = $form->getData();
@@ -64,9 +67,9 @@ class RecipeController extends AbstractController
             return $this->redirectToRoute('recipe.index');
         }
         return $this->render('pages/recipe/new.html.twig', [
-          'form'=> $form->createView(),
+            'form' => $form->createView(),
         ]);
-}
+    }
 
 
 
@@ -76,7 +79,10 @@ class RecipeController extends AbstractController
         Request $request,
         EntityManagerInterface $manager
     ): Response {
-        $form = $this->createForm(RecipeType::class, $recipe);
+        // Si $recipe->getId() est null, alors c'est une création, sinon c'est une mise à jour
+        $form = $this->createForm(RecipeType::class, $recipe, [
+            'submit_label' => $recipe->getId() ? 'Mettre à jour ma recette' : 'Créer ma recette'
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $recipe = $form->getData();
@@ -101,8 +107,7 @@ class RecipeController extends AbstractController
     public function delete(
         Recipe $recipe,
         EntityManagerInterface $manager
-    ): Response
-    {
+    ): Response {
         if (!$recipe) {
 
             $this->addFlash(
@@ -122,5 +127,4 @@ class RecipeController extends AbstractController
 
         return $this->redirectToRoute('recipe.index');
     }
-
 }
