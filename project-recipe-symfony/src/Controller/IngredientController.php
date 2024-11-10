@@ -29,7 +29,7 @@ class IngredientController extends AbstractController
     public function index(IngredientRepository $repository, PaginatorInterface $paginator, Request $request): Response
     {
         $ingredients = $paginator->paginate(
-            $repository->findAll(),
+            $repository->findBy(['user' => $this->getUser()]),
             $request->query->getInt('page', 1),
             10
         );
@@ -56,6 +56,7 @@ class IngredientController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $ingredient = $form->getData();
+            $ingredient->setUser($this->getUser());
             /**dd($ingredient);*/
             /**persist et flush we can say it's the same logique as commit and push */
 
@@ -74,7 +75,7 @@ class IngredientController extends AbstractController
     }
 
 
-    
+
     /**
      * this controller allow us to update an ingredient
      *
@@ -113,7 +114,7 @@ class IngredientController extends AbstractController
         );;
     }
 
-   
+
     /**
      * this controller allow us to delete an ingredient
      *
