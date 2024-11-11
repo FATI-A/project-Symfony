@@ -42,6 +42,45 @@ class RecipeController extends AbstractController
         ]);
     }
 
+
+
+    #[Route('/recette/communaute', 'recipe.community', methods: ['GET'])]
+    public function indexPublic(
+        RecipeRepository $repository,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
+
+        $recipes = $paginator->paginate(
+            $repository->findPublicRecipe(null),
+            $request->query->getInt('page', 1),
+            10
+        );
+        return $this->render('pages/recipe/community.html.twig', [
+            'recipes' => $recipes
+        ]);
+    }
+
+
+
+    /**
+     * this controller allows us to see a recipe if this one is public
+     *
+     * @param Recipe $recipe
+     * @return Response
+     */
+    #[Security("is_granted('ROLE_USER') and recipe.getIsPublic() === true")]
+    #[Route('/recette/{id}', 'recipe.show', methods: ["GET"])]
+    public function show(Recipe $recipe): Response
+    {
+
+        return $this->render('pages/recipe/show.html.twig', [
+            'recipe' => $recipe
+        ]);
+    }
+
+
+
     /**
      * this controller show  a form which create recipe 
      *
@@ -125,6 +164,7 @@ class RecipeController extends AbstractController
      * @param EntityManagerInterface $manager
      * @return Response
      */
+    #[Security("is_granted('ROLE_USER') and user === recipe.getUser()")]
     #[Route('/recette/suppression/{id}', 'recipe.delete', methods: ["GET"])]
     public function delete(
         Recipe $recipe,
