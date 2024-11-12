@@ -10,7 +10,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture; //we want the data to be the same be
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 class AppFixtures extends Fixture
 {

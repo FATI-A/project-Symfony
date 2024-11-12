@@ -18,6 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class RecipeType extends AbstractType
 {
@@ -136,6 +137,13 @@ class RecipeType extends AbstractType
                     new Assert\NotNull()
                 ]
             ])
+            ->add('imageFile', VichFileType::class, [
+                'label' => 'Image de la recette',
+                'label_attr' => [
+                    'class' => 'form-label mt-4'
+                ],
+                'required' => false
+            ])
             ->add('ingredients', EntityType::class, [
                 'class' => Ingredient::class,
                 'query_builder' => function (IngredientRepository $r) {
@@ -151,6 +159,10 @@ class RecipeType extends AbstractType
                 'choice_label' => 'name',
                 'multiple' => true,
                 'expanded' => true,
+            ])
+              ->add('submit', SubmitType::class, [
+                'label' => $options['submit_label'],
+                'attr' => ['class' => 'btn btn-primary mt-4'],
             ])
         ;
     }
