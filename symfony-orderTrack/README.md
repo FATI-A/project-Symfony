@@ -13,15 +13,17 @@ Avant de commencer, assurez-vous d'avoir installé les outils suivants sur votre
 
 ### Installation
 
-**Configurer la base de données** DATABASE_URL="mysql://root:password@127.0.0.1:3306/order_tracking?serverVersion=5.7"
-**Créer la base de données**  php bin/console doctrine:database:create
-**Créer les tables dans la base de données** php bin/console make:migration
+
+- **Configurer la base de données** :DATABASE_URL="mysql://root:password@127.0.0.1:3306/order_tracking?serverVersion=5.7"
+
+- **Créer la base de données**  php bin/console doctrine:database:create
+- **Créer les tables dans la base de données** php bin/console make:migration
                                             php bin/console doctrine:migrations:migrate
-**Supprimer la base de données** php bin/console doctrine:database:drop
-**Installer Doctrine fixture** composer require --dev orm-fixtures
-**Installer faker pour generer des fakes data** composer require fakerphp/faker --dev
-**Charger des données de test**  php bin/console doctrine:fixtures:load
-**Démarrer le serveur de développement** php bin/console server:start
+- **Supprimer la base de données** php bin/console doctrine:database:drop
+- **Installer Doctrine fixture** composer require --dev orm-fixtures
+- **Installer faker pour generer des fakes data** composer require fakerphp/faker --dev
+- **Charger des données de test**  php bin/console doctrine:fixtures:load
+- **Démarrer le serveur de développement** php bin/console server:start
 
 vous pouvez remplacer php bin/console par symfony 
 
