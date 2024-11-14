@@ -43,7 +43,7 @@
 							<td>{{ article.price|number_format(2, '.', ',') }}€</td>
 							<td>{{ article.stock }}</td>
 							<td>
-								<a href="#" class="btn btn-success">Modifier</a>
+								<a href="{{path('article.edit',{id: article.id} )}}" class=" btn btn-success">Modifier</a>
 							</td>
 							<td>
 								<a href="{{path('article.delete',{id: article.id})}}" class="btn btn-warning">Supprimer</a>

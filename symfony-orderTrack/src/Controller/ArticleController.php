@@ -75,12 +75,55 @@ class ArticleController extends AbstractController
     }
 
 
- 
+    /**
+     * this controller allow us to update an article
+     *
+     * @param Article $article
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    #[Route('/article/edition/{id}', 'article.edit', methods: ["GET", "POST"])]
+    public function edit(
+        Article $article,
+        Request $request,
+        EntityManagerInterface $manager
+    ): Response {
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $article = $form->getData();
+            $manager->persist($article);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'votre article a été modifié avec succes '
+            );
+            return $this->redirectToRoute('article.index');
+        }
+        return $this->Render(
+            'pages/article/edit.html.twig',
+            [
+                'form' => $form->createView()
+            ]
+        );;
+    }
+
+
+
+    /**
+     * this controller allow us to delete an article
+     *
+     * @param EntityManagerInterface $manager
+     * @param Article $article
+     * @return Response
+     */
     #[Route('/article/suppression/{id}', 'article.delete', methods: ["GET"])]
     public function delete(
-        EntityManagerInterface $manager, 
-        Article $article ): Response
-    {
+        EntityManagerInterface $manager,
+        Article $article
+    ): Response {
         if (!$article) {
 
             $this->addFlash(
@@ -100,4 +143,7 @@ class ArticleController extends AbstractController
 
         return $this->redirectToRoute('article.index');
     }
+
+
+    
 }

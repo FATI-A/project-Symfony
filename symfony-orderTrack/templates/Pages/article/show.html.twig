@@ -1,0 +1,44 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	SymOrderTrack -
+	{{ article.name }}
+{% endblock %}
+
+{% block body %}
+	<div
+		class="container my-5">
+		<!-- Affichage des messages flash de succès -->
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-success mt-4">
+				{{ message }}
+			</div>
+		{% endfor %}
+
+		<div class="card">
+			<div class="card-header">
+				<h1 class="card-title text-center">
+					{{ article.name }}</h1>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-6 text-center">
+						<img src="{{ asset('images/phone.jpg') }}" class="img-fluid rounded card-image" alt="image">
+					</div>
+					<div class="col-md-6">
+						<h5 class="mt-3">Description :</h5>
+						<p class="card-text">{{ article.description|raw }}</p>
+						<h3 class="mt-3">Prix (en €) :
+							<span class="badge bg-primary">{{ article.price }}</span>
+						</h3>
+						<div class="mt-5 d-flex justify-content-start">
+							<a href="#" class="btn btn-info btn-lg">Ajouter à la commande</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %}

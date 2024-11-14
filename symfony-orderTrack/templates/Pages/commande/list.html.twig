@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des commandes
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<h1>Mes commandes</h1>
+
+		{% for message in app.flashes('success') %}
+			<div class="alert-success mt-4">
+				{{ message }}
+			</div>
+		{% endfor %}
+
+		<div class="d-flex justify-content-end">
+			<a href="{{path('commande.new')}}" class="btn btn-success">Ajouter à la commande</a>
+		</div>
+
+		{% if commandes is not empty %}
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Numero</th>
+						<th>Date de création</th>
+						<th>Statut</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for commande in commandes %}
+						<tr>
+							<td>{{ commande.id }}</td>
+							<td>{{ commande.date|date('d/m/Y H:i') }}</td>
+							<td>{{ commande.statut }}</td>
+
+							<td>
+								<a href="#" class="btn btn-info">Voir</a>
+								<a href="#" class="btn btn-warning">Modifier</a>
+								<form action="{{path('commande.delete',{id: commande.id} )}}" method="POST" style="display:inline;">
+									<button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette commande ?')">Supprimer</button>
+								</form>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		{% else %}
+			<p>Aucune commande n'a été trouvée.</p>
+		{% endif %}
+	</div>
+{% endblock %}

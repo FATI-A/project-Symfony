@@ -1,0 +1,50 @@
+{% extends "base.html.twig" %}
+
+{% block title %}SymOrderTrack - Modifier un article
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<h1 class="mt-4">Modification d'un article</h1>
+
+		{{ form_start(form) }}
+
+		<div class="form-group">
+			{{ form_label(form.name) }}
+			{{ form_widget(form.name) }}
+			<div class="form-error">
+				{{ form_errors(form.name) }}
+			</div>
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.description) }}
+			{{ form_widget(form.description) }}
+			<div class="form-error">
+				{{ form_errors(form.description) }}
+			</div>
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.price) }}
+			{{ form_widget(form.price) }}
+			<div class="form-error">
+				{{ form_errors(form.price) }}
+			</div>
+		</div>
+		<div class="form-group">
+			{{ form_label(form.stock) }}
+			{{ form_widget(form.stock) }}
+			<div class="form-error">
+				{{ form_errors(form.stock) }}
+			</div>
+		</div>
+
+		<div class="form-group">
+			{{ form_row(form.submit) }}
+		</div>
+
+	</div>
+	{{ form_end(form) }}
+</div>{% endblock %}
+
