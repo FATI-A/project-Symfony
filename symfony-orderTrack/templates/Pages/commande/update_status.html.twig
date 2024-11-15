@@ -8,7 +8,6 @@
 	<div class="container">
 		<h1 class="mt-4">Mise à jour du statut de la commande #{{ commande.id }}</h1>
 
-		{# Affichage des messages flash #}
 		{% for label, messages in app.flashes %}
 			<div class="alert alert-{{ label }}">
 				{% for message in messages %}

@@ -2,14 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Article;
 use App\Entity\Commande;
 use App\Entity\CommandeArticle;
-use App\Form\CommandeType;
 use App\Repository\ArticleRepository;
 use App\Repository\CommandeRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\TextUI\Command;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Knp\Component\Pager\PaginatorInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 class CommandeController extends AbstractController
@@ -49,113 +45,119 @@ class CommandeController extends AbstractController
 
 
 
-
+    /**
+     * this controller allows us to create a new command
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $Manager
+     * @param ArticleRepository $articleRepository
+     * @return void
+     */
     #[Route('/commande/nouveau-clasique', 'commande.new_classique', methods: ["GET", "POST"])]
+    #[IsGranted('ROLE_USER')]
     public function new_classique(
         Request $request,
         EntityManagerInterface $Manager,
-        LoggerInterface $logger,
         ArticleRepository $articleRepository
     ) {
         $commande = new Commande();
-
-        // Par défaut, une commande est en statut "En attente"
         $commande->setStatut('En attente');
-        $commande->setUser($this->getUser());  // Associer l'utilisateur connecté à la commande
-
-        // Récupérer tous les articles disponibles pour être affichés dans le formulaire
-        $articles = $Manager->getRepository(Article::class)->findAll();
-
-        // Traiter la soumission du formulaire
+        $commande->setUser($this->getUser());
+        $articles = $articleRepository->findAll();
         if ($request->isMethod('POST')) {
-            // Récupérer les données envoyées par le formulaire
-            $statut = $request->request->get('statut'); // Récupérer le statut de la commande
-            $articleIds = $request->request->get('article_ids', []);  // Les articles sélectionnés
-            $quantities = $request->request->get('quantities', []);  // Les quantités pour chaque article
+            $statut = $request->request->get('statut');
+            $dateCommande = $request->get('date_commande');
+            $articleIds = $request->get('article_ids', []);
+            $quantities = $request->get('quantities', []);
 
-            // Mettre à jour le statut de la commande
-            $commande->setStatut($statut);
-            $articleIds = $request->request->get('article_ids', []); // Récupérer les IDs des articles sélectionnés
-            $quantities = $request->request->get('quantities', []); // Récupérer les quantités associées
-            $logger->info('test_info' . $articleIds);
-            // Vérification que les IDs et les quantités existent
-            if (is_array($articleIds) && $quantities) {
-                foreach ($articleIds as $index => $articleId) {
-                    // Trouver l'article correspondant par son ID
+            if (!empty($articleIds) && is_array($articleIds) && is_array($quantities)) {
+                foreach ($articleIds as $articleId) {
                     $article = $articleRepository->find($articleId);
 
-                    // Vérifier si l'article existe et si la quantité est valide
-                    if ($article && isset($quantities[$index]) && $quantities[$index] > 0) {
-                        // Créer un nouvel objet CommandeArticle
-                        $commandeArticle = new CommandeArticle();
-                        $commandeArticle->setArticle($article);
-                        $commandeArticle->setQuantity($quantities[$index]);
-                        $commandeArticle->setCommande($commande);
+                    if ($article && $quantities[$articleId] > 0) {
 
-                        // Ajouter ce CommandeArticle à la commande
-                        $commande->addCommandeArticle($commandeArticle);
+                        $quantityRequested = $quantities[$articleId];
+                        if ($article->getStock() >= $quantityRequested) {
+                            $commandeArticle = new CommandeArticle();
+                            $commandeArticle->setArticle($article);
+                            $commandeArticle->setQuantity($quantityRequested);
+                            $commandeArticle->setCommande($commande);
 
-                        // Persister l'objet CommandeArticle dans la base de données
-                        $Manager->persist($commandeArticle);
+                            $commande->addCommandeArticle($commandeArticle);
+                          
+                            $article->setStock($article->getStock() - $quantityRequested);
+                            $Manager->persist($article);  
+                            $Manager->persist($commandeArticle);
+                        } else {
+                            $this->addFlash('error', "Stock insuffisant pour l'article: {$article->getName()}.");
+                            return $this->redirectToRoute('commande.new_classique');
+                        }
                     }
                 }
+            } else {
+                
+                $this->addFlash('error', 'Erreur dans les données du formulaire : articles ou quantités invalides.');
+                return $this->redirectToRoute('commande.new_classique');
             }
 
-            // Sauvegarder la commande dans la base de données
-            $Manager->persist($commande);
-            $Manager->flush();  // Enregistrer toutes les données
 
-            // Afficher un message de succès
+            $commande->setDate(new \DateTime($dateCommande));
+            $commande->setStatut($statut);
+
+            $Manager->persist($commande);
+            $Manager->flush();
+
+
             $this->addFlash('success', 'Commande créée avec succès !');
 
-            // Rediriger vers la liste des commandes
+
             return $this->redirectToRoute('commande.list');
         }
 
         return $this->render('pages/commande/new_classique.html.twig', [
-            'articles' => $articles,  // Passer les articles à la vue
+            'articles' => $articles,
         ]);
     }
 
 
-    #[Route('/commande/nouveau', 'commande.new', methods: ["GET", "POST"])]
-    public function new(
-        Request $request,
-         EntityManagerInterface $Manager, 
-          LoggerInterface $logger)
-    {
+    // #[Route('/commande/nouveau', 'commande.new', methods: ["GET", "POST"])]
+    // public function new(
+    //     Request $request,
+    //      EntityManagerInterface $Manager, 
+    //       LoggerInterface $logger)
+    // {
 
-        $commande = new Commande();
-        $commande->setStatut('En attente');
-        $commande->setUser($this->getUser());;
+    //     $commande = new Commande();
+    //     $commande->setStatut('En attente');
+    //     $commande->setUser($this->getUser());;
 
-        $form = $this->createForm(CommandeType::class, $commande, [
-            'submit_label' => $commande->getId() ? 'Mettre à jour ma commande' : 'Créer ma commande'
-        ]);
+    //     $form = $this->createForm(CommandeType::class, $commande, [
+    //         'submit_label' => $commande->getId() ? 'Mettre à jour ma commande' : 'Créer ma commande'
+    //     ]);
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $commande = $form->getData();
-            $logger->info('Données de la commande:', ['commande' => $commande]);
-            $commandeArticles = $commande->getCommandeArticles();
+    //     $form->handleRequest($request);
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $commande = $form->getData();
+    //         $logger->info('Données de la commande:', ['commande' => $commande]);
+    //         $commandeArticles = $commande->getCommandeArticles();
 
-            foreach ($commandeArticles as $commandeArticle) {
-                $commandeArticle->setCommande($commande);
-                $Manager->persist($commandeArticle);
-            }
+    //         foreach ($commandeArticles as $commandeArticle) {
+    //             $commandeArticle->setCommande($commande);
+    //             $Manager->persist($commandeArticle);
+    //         }
 
-            $Manager->persist($commande);
-            $Manager->flush();
-            $this->addFlash('success', 'Commande créée avec succès !');
+    //         $Manager->persist($commande);
+    //         $Manager->flush();
+    //         $this->addFlash('success', 'Commande créée avec succès !');
 
 
-            return $this->redirectToRoute('commande.list');
-        }
+    //         return $this->redirectToRoute('commande.list');
+    //     }
 
-        return $this->render('pages/commande/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
+    //     return $this->render('pages/commande/new.html.twig', [
+    //         'form' => $form->createView(),
+    //     ]);
+    // }
 
 
     /**

@@ -4,32 +4,60 @@
 {% endblock %}
 
 {% block body %}
-
 	<div class="container">
 		<h1 class="mt-4">Création d'une commande</h1>
-		<form method="POST" class=" mt-4">
+		{% for message in app.flashes('error') %}
+			<div class="alert alert-danger mt-4">
+				{{ message }}
+			</div>
+		{% endfor %}
+		<form method="POST" class="mt-4" id="commandeForm">
+			<div class="mb-3">
+				<label for="date_commande" class="form-label">Date de la commande</label>
+				<input type="date" name="date_commande" id="date_commande" class="form-control" required>
+			</div>
 			<div class="mb-3">
 				<label for="statut" class="form-label">Statut</label>
 				<select name="statut" id="statut" class="form-select">
 					<option value="En attente" selected>En attente</option>
 					<option value="En cours">En cours</option>
-					<option value="Validée">Validée</option>
+					<option value="livrée">livrée</option>
 				</select>
 			</div>
 
-<h4 class="mt-4">Articles</h4>
-{% for article in articles %}
-	<div class="mb-3 form-check">
-		<input type="checkbox" name="article_ids[]" value="{{ article.id }}" class="form-check-input" id="article_{{ article.id }}">
-		<label for="article_{{ article.id }}" class="form-check-label">{{ article.name }}</label>
+			<h4 class="mt-4">Articles</h4>
+			{% for article in articles %}
+				<div class="mb-3 form-check">
+					<input type="checkbox" name="article_ids[]" value="{{ article.id }}" class="form-check-input" id="article_{{ article.id }}">
+					<label for="article_{{ article.id }}" class="form-check-label">{{ article.name }}</label>
 
-		<input type="number" name="quantities[{{ loop.index0 }}]" placeholder="Quantité" min="1" class="form-control mt-2"/>
-	</div>
-{% endfor %}
-
+					<input type="number" name="quantities[{{ article.id}}]" id="quantity_{{ article.id }}" placeholder="Quantité" min="1" class="form-control mt-2" disabled/>
+				</div>
+			{% endfor %}
 
 			<button type="submit" class="btn btn-primary mt-3">Créer la commande</button>
 		</form>
 	</div>
+	<script>
+
+		document.querySelectorAll('input[type="checkbox"]').forEach(function (checkbox) {
+checkbox.addEventListener('change', function () {
+var quantityInput = document.getElementById('quantity_' + checkbox.value);
+if (checkbox.checked) {
+quantityInput.disabled = false;
+} else {
+quantityInput.disabled = true;
+quantityInput.value = '';
+}
+});
+});
+
+
+document.getElementById('commandeForm').addEventListener('submit', function (event) {
+document.querySelectorAll('input[type="number"]:disabled').forEach(function (input) {
+input.name = '';
+});
+});
+	</script>
 
 {% endblock %}
