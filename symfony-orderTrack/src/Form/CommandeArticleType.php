@@ -37,7 +37,7 @@ class CommandeArticleType extends AbstractType
                 },
                 'choice_label' => 'name',
                 'expanded' => true,
-                'multiple' => true,
+                'multiple' => false,
             ])
             ->add('quantity', IntegerType::class, [
                 'attr' => [

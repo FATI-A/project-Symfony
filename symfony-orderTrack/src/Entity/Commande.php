@@ -20,7 +20,7 @@ class Commande
     private ?string $statut = null;
 
     #[ORM\Column()]
-    private ?\DateTimeImmutable $date = null;
+    private ?\DateTime $date = null;
 
     #[ORM\OneToMany(targetEntity: CommandeArticle::class, mappedBy: 'Commande', orphanRemoval: true)]
     private Collection $commandeArticles;
@@ -32,7 +32,7 @@ class Commande
 
     public function __construct()
     {
-        $this->date =new \DateTimeImmutable();
+        $this->date =new \DateTime();
         $this->commandeArticles = new ArrayCollection();
     }
 
@@ -51,12 +51,12 @@ class Commande
 
         return $this;
     }
-    public function getDate(): ?\DateTimeImmutable
+    public function getDate(): ?\DateTime
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeImmutable $date): static
+    public function setDate(\DateTime  $date): static
     {
         $this->date = $date;
 

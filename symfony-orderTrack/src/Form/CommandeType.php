@@ -28,7 +28,7 @@ class CommandeType extends AbstractType
                 'choices' => [
                     'En attente' => 'En attente',
                     'En cours' => 'En cours',
-                    'Validée' => 'Validée',
+                    'Validée' => 'livrée',
                 ],
                 'attr' => [
                     'class' => 'form-select'
@@ -41,7 +41,7 @@ class CommandeType extends AbstractType
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de la commande',
-                'data' => new \DateTimeImmutable(),
+                'data' => new \DateTime(),
                 'format' => 'yyyy-MM-dd',
                 'label_attr' => [
                     'class' => 'form-label mt-4'

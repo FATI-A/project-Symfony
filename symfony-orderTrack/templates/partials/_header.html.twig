@@ -11,13 +11,20 @@
 						<span class="visually-hidden">(current)</span>
 					</a>
 				</li>
-
-				<li class="nav-item">
-					<a class="nav-link  text-light" href="{{path('commande.list')}} ">Mes commandes</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link  text-light" href="{{path('article.index')}}">Les articles</a>
-				</li>
+				{% if app.user is not null %}
+					{% if 'ROLE_ADMIN' in app.user.roles %}
+						<li class="nav-item">
+							<a class="nav-link  text-light" href="{{path('article.index')}}">Les articles</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link  text-light" href="{{path('commande.index')}}">Les commandes</a>
+						</li>
+					{% else %}
+						<li class="nav-item">
+							<a class="nav-link  text-light" href="{{path('commande.list')}} ">Mes commandes</a>
+						</li>
+					{% endif %}
+				{% endif %}
 			</ul>
 			<div class="d-flex">
 				<ul class="navbar-nav me-auto">
@@ -39,7 +46,6 @@
 							</a>
 						</li>
 					{% endif %}
-
 				</ul>
 			</div>
 		</div>

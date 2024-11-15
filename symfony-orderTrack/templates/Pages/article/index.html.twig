@@ -6,23 +6,22 @@
 {% block body %}
 	<div class="container mt-4">
 		{% if not articles.items is same as ([])%}
-			<h1>Les articles</h1>
-			<a href="{{path('article.new')}}" class="btn btn-info mt-4">
-				créer un nouvel article
-			</a>
 
 			{% for message in app.flashes('success') %}
 				<div class="alert-success mt-4">
 					{{ message }}
 				</div>
 			{% endfor %}
+			<h1>Les articles</h1>
+			<a href="{{path('article.new')}}" class="btn btn-info mt-4">
+				créer un nouvel article
+			</a>
 			<div class="count mt-4">
-				<h4>il y a
-					{{articles.getTotalItemCount}}
-
-					articles au total</h4>
+				il y a
+				{{articles.getTotalItemCount}}
+				articles au total
 			</div>
-			<table class="table table-hover ">
+			<table class="table table-hover">
 				<thead>
 					<tr>
 						<th scope="col ">Numéro</th>
@@ -30,8 +29,7 @@
 						<th scope="col">Description</th>
 						<th scope="col">Prix</th>
 						<th scope="col">Stock</th>
-						<th scope="col">Edition</th>
-						<th scope="col">Suppresion</th>
+						<th scope="col">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -43,21 +41,27 @@
 							<td>{{ article.price|number_format(2, '.', ',') }}€</td>
 							<td>{{ article.stock }}</td>
 							<td>
-								<a href="{{path('article.edit',{id: article.id} )}}" class=" btn btn-success">Modifier</a>
-							</td>
-							<td>
-								<a href="{{path('article.delete',{id: article.id})}}" class="btn btn-warning">Supprimer</a>
+								<div class="btn-group" role="group" style="gap: 8px;">
+									<a href="{{path('article.edit',{id: article.id} )}}" class=" btn btn-success">Modifier</a>
+									<form action="{{path('article.delete',{id: article.id} )}}" method="POST">
+										<button type="submit" class="btn btn-primary " onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette  ?')">Supprimer</button>
+									</form>
+								</div>
 							</td>
 						</tr>
-					</td>
+					{% endfor %}
 				</tbody>
-			</tr>
-		{% endfor %}
-	</tbody>
-</table>
-<div class="navigation d-flex justify-content-center mt-4">
-	{{ knp_pagination_render(articles) }}
-{% else %}
-	<h4>
-		il n'y pas d'article</h4>
-{% endif %}</div>{% endblock %}
+			</table>
+			<div class="navigation d-flex justify-content-center mt-4">
+				{{ knp_pagination_render(articles) }}
+			</div>
+		{% else %}
+			<h4>
+				il n'y pas d'article</h4>
+			<a href="{{path('article.new')}}" class="btn btn-info mt-4">
+				créer un nouvel article
+			</a>
+
+		{% endif %}
+	</div>
+{% endblock %}

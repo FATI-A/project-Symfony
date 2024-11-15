@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SymOrderTrack - Détails de la commande
+
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<h1>Détails de la commande
+			{{ commande.id }}</h1>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Article</th>
+					<th scope="col">Quantité</th>
+					<th scope="col">Prix unitaire</th>
+					<th scope="col">Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for commandeArticle in commande.commandeArticles %}
+					<tr>
+						<td>{{ commandeArticle.article.name }}</td>
+						<td>{{ commandeArticle.quantity }}</td>
+						<td>{{ commandeArticle.article.price | number_format(2, '.', ' ') }}
+							€</td>
+						<td>{{ (commandeArticle.quantity * commandeArticle.article.price) | number_format(2, '.', ' ') }}
+							€</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<h3>Total de la commande:
+			{{ totalPrice | number_format(2, '.', ' ') }}
+			€</h3>
+		<div class="d-flex justify-content-end">
+			<a href="{{ path(is_granted('ROLE_ADMIN') ? 'commande.index' : 'commande.list') }}" class="btn btn-success">Retour à la liste des commandes</a>
+
+		</div>
+	</div>
+{% endblock %}

@@ -119,7 +119,7 @@ class ArticleController extends AbstractController
      * @param Article $article
      * @return Response
      */
-    #[Route('/article/suppression/{id}', 'article.delete', methods: ["GET"])]
+    #[Route('/article/suppression/{id}', 'article.delete', methods: ["GET","POST"])]
     public function delete(
         EntityManagerInterface $manager,
         Article $article

@@ -23,8 +23,18 @@ class AppFixtures extends Fixture
     }
     public function load(ObjectManager $manager): void
     {
-          //Users
+         
         $users = [];
+        $admin = new User();
+        $admin->setFullName('Administrateur de SymOrderTrack')
+        ->setPseudo(null)
+        ->SetEmail('admin@symOrder.fr')
+        ->setRoles(['ROLE_ADMIN'])
+        ->setPlainPassword('password');
+
+        $users[] = $admin;
+        $manager->persist($admin);
+
         for ($i = 0; $i < 10; $i++) {
             $user = new User();
             $user->setFullName($this->faker->name())
@@ -56,7 +66,7 @@ class AppFixtures extends Fixture
 
        for ($i = 0; $i < 10; $i++) {
             $commande = new Commande();
-            $commande->setDate(new \DateTimeImmutable()) 
+            $commande->setDate(new \DateTime()) 
                      ->setStatut('En attente')
                       ->setUser($users[mt_rand(0, count($users) - 1)]);
             foreach ($articles as $article) {

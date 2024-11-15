@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SymOrderTrack - Mise à jour du statut de la commande
+
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<h1 class="mt-4">Mise à jour du statut de la commande #{{ commande.id }}</h1>
+
+		{# Affichage des messages flash #}
+		{% for label, messages in app.flashes %}
+			<div class="alert alert-{{ label }}">
+				{% for message in messages %}
+					<p>{{ message }}</p>
+				{% endfor %}
+			</div>
+		{% endfor %}
+
+		<form method="POST">
+			<div class="form-group">
+				<label for="statut">Statut</label>
+				<select name="statut" id="statut" class="form-control" required>
+					{% for key, value in statuts %}
+						<option value="{{ key }}" {% if key == commande.statut %} selected {% endif %}>{{ value }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<button type="submit" class="btn btn-primary mt-3">Mettre à jour</button>
+		</form>
+	</div>
+{% endblock %}
+

@@ -1,0 +1,35 @@
+{% extends "base.html.twig" %}
+
+{% block title %}SymOrderTrack - Nouvelle commande
+{% endblock %}
+
+{% block body %}
+
+	<div class="container">
+		<h1 class="mt-4">Création d'une commande</h1>
+		<form method="POST" class=" mt-4">
+			<div class="mb-3">
+				<label for="statut" class="form-label">Statut</label>
+				<select name="statut" id="statut" class="form-select">
+					<option value="En attente" selected>En attente</option>
+					<option value="En cours">En cours</option>
+					<option value="Validée">Validée</option>
+				</select>
+			</div>
+
+<h4 class="mt-4">Articles</h4>
+{% for article in articles %}
+	<div class="mb-3 form-check">
+		<input type="checkbox" name="article_ids[]" value="{{ article.id }}" class="form-check-input" id="article_{{ article.id }}">
+		<label for="article_{{ article.id }}" class="form-check-label">{{ article.name }}</label>
+
+		<input type="number" name="quantities[{{ loop.index0 }}]" placeholder="Quantité" min="1" class="form-control mt-2"/>
+	</div>
+{% endfor %}
+
+
+			<button type="submit" class="btn btn-primary mt-3">Créer la commande</button>
+		</form>
+	</div>
+
+{% endblock %}

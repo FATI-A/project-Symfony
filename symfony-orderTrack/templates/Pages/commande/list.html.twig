@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des commandes
+{% block title %}SymOrderTrack - Liste des commandes
+
 {% endblock %}
 
 {% block body %}
@@ -14,7 +15,7 @@
 		{% endfor %}
 
 		<div class="d-flex justify-content-end">
-			<a href="{{path('commande.new')}}" class="btn btn-success">Ajouter à la commande</a>
+			<a href="{{path('commande.new_classique')}}" class="btn btn-success">Ajouter à la commande</a>
 		</div>
 
 		{% if commandes is not empty %}
@@ -35,8 +36,8 @@
 							<td>{{ commande.statut }}</td>
 
 							<td>
-								<a href="#" class="btn btn-info">Voir</a>
-								<a href="#" class="btn btn-warning">Modifier</a>
+								<a href="{{ path('commande.show',{id: commande.id}) }}" class="btn btn-info">Voir</a>
+								<a href="{{ path('commande.update_status',{id: commande.id}) }}" class="btn btn-warning">Modifier</a>
 								<form action="{{path('commande.delete',{id: commande.id} )}}" method="POST" style="display:inline;">
 									<button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette commande ?')">Supprimer</button>
 								</form>
